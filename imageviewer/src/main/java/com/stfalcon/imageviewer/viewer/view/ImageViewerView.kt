@@ -57,6 +57,8 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
 
+    internal var onOverlayVisibilityChanged: ((Boolean) -> Unit)? = null
+
     internal var isZoomingAllowed = true
     internal var isSwipeToDismissAllowed = true
 
@@ -317,6 +319,7 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
 
     private fun handleSingleTap(event: MotionEvent, isOverlayWasClicked: Boolean) {
         if (overlayView != null && !isOverlayWasClicked) {
+            onOverlayVisibilityChanged?.invoke(!overlayView.isVisible)
             overlayView?.switchVisibilityWithAnimation()
             super.dispatchTouchEvent(event)
         }

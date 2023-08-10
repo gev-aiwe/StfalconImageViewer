@@ -20,14 +20,20 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import androidx.annotation.*;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Px;
 import androidx.core.content.ContextCompat;
+
 import com.stfalcon.imageviewer.listeners.OnDismissListener;
 import com.stfalcon.imageviewer.listeners.OnImageChangeListener;
 import com.stfalcon.imageviewer.loader.ImageLoader;
-import com.stfalcon.imageviewer.viewer.viewholder.ViewHolderLoader;
 import com.stfalcon.imageviewer.viewer.builder.BuilderData;
 import com.stfalcon.imageviewer.viewer.dialog.ImageViewerDialog;
+import com.stfalcon.imageviewer.viewer.viewholder.ViewHolderLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -251,16 +257,6 @@ public class StfalconImageViewer<T> {
          */
         public Builder<T> withContainerPaddingPixels(int start, int top, int end, int bottom) {
             this.data.setContainerPaddingPixels(new int[]{start, top, end, bottom});
-            return this;
-        }
-
-        /**
-         * Sets status bar visibility. True by default.
-         *
-         * @return This Builder object to allow calls chaining
-         */
-        public Builder<T> withHiddenStatusBar(boolean value) {
-            this.data.setShouldStatusBarHide(value);
             return this;
         }
 

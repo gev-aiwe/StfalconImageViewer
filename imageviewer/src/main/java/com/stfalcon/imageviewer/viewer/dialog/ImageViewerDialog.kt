@@ -17,9 +17,10 @@
 package com.stfalcon.imageviewer.viewer.dialog
 
 import android.content.Context
+import android.os.Build
 import android.view.KeyEvent
 import android.view.View
-import android.view.WindowManager
+import android.view.WindowInsets
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import com.stfalcon.imageviewer.R
@@ -35,22 +36,10 @@ internal class ImageViewerDialog<T>(
     private val viewerView: ImageViewerView<T> = ImageViewerView(context)
     private var animateOpen = true
 
-    private val dialogStyle: Int
-        get() = if (builderData.shouldStatusBarHide)
-            R.style.ImageViewerDialog_NoStatusBar
-        else
-            R.style.ImageViewerDialog_Default
-
-    private val dialogSystemUiVisibility: Int
-        get() = if (builderData.shouldStatusBarHide)
-            0
-        else
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-
     init {
         setupViewerView()
         dialog = AlertDialog
-            .Builder(context, dialogStyle)
+            .Builder(context, R.style.ImageViewerDialog_Default)
             .setView(viewerView)
             .setOnKeyListener { _, keyCode, event -> onDialogKeyEvent(keyCode, event) }
             .create()
@@ -58,7 +47,24 @@ internal class ImageViewerDialog<T>(
                 setOnShowListener { viewerView.open(builderData.transitionView, animateOpen) }
                 setOnDismissListener { builderData.onDismissListener?.onDismiss() }
             }
-        dialog.window?.decorView?.systemUiVisibility = dialogSystemUiVisibility
+
+        viewerView.onOverlayVisibilityChanged = { visible ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                dialog.window?.insetsController?.let { windowInsetsController ->
+                    if (visible) {
+                        windowInsetsController.show(WindowInsets.Type.statusBars())
+                    } else {
+                        windowInsetsController.hide(WindowInsets.Type.statusBars())
+                    }
+                }
+            } else {
+                dialog.window?.decorView?.systemUiVisibility = if (visible) {
+                    View.SYSTEM_UI_FLAG_VISIBLE
+                } else {
+                    View.SYSTEM_UI_FLAG_FULLSCREEN
+                }
+            }
+        }
     }
 
     fun show(animate: Boolean) {
