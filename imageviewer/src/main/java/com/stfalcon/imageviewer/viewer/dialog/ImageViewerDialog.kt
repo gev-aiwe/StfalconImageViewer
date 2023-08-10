@@ -21,8 +21,11 @@ import android.os.Build
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowInsets
+import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.toColorInt
 import com.stfalcon.imageviewer.R
 import com.stfalcon.imageviewer.viewer.builder.BuilderData
 import com.stfalcon.imageviewer.viewer.view.ImageViewerView
@@ -39,7 +42,7 @@ internal class ImageViewerDialog<T>(
     init {
         setupViewerView()
         dialog = AlertDialog
-            .Builder(context, R.style.ImageViewerDialog_Default)
+            .Builder(context, R.style.ImageViewerDialog)
             .setView(viewerView)
             .setOnKeyListener { _, keyCode, event -> onDialogKeyEvent(keyCode, event) }
             .create()
@@ -49,21 +52,43 @@ internal class ImageViewerDialog<T>(
             }
 
         viewerView.onOverlayVisibilityChanged = { visible ->
+            if (visible) showSystemBar() else hideSystemBar()
+        }
+    }
+
+    private fun showSystemBar() {
+        dialog.window?.let { window ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                dialog.window?.insetsController?.let { windowInsetsController ->
-                    if (visible) {
-                        windowInsetsController.show(WindowInsets.Type.statusBars())
-                    } else {
-                        windowInsetsController.hide(WindowInsets.Type.statusBars())
-                    }
-                }
+                val windowInsetsController = window.decorView.windowInsetsController
+                windowInsetsController?.show(WindowInsets.Type.statusBars())
             } else {
-                dialog.window?.decorView?.systemUiVisibility = if (visible) {
-                    View.SYSTEM_UI_FLAG_VISIBLE
-                } else {
-                    View.SYSTEM_UI_FLAG_FULLSCREEN
-                }
+                @Suppress("DEPRECATION")
+                dialog.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             }
+        }
+    }
+
+    private fun hideSystemBar() {
+        dialog.window?.let { window ->
+            val windowManagerLayoutParams = window.attributes
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                windowManagerLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                windowManagerLayoutParams.fitInsetsTypes = WindowInsets.Type.statusBars()
+                val windowInsetsController = window.decorView.windowInsetsController
+                windowInsetsController?.hide(WindowInsets.Type.statusBars())
+            } else {
+                @Suppress("DEPRECATION")
+                dialog.window?.decorView?.systemUiVisibility = (
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        )
+            }
+            window.attributes = windowManagerLayoutParams
         }
     }
 
@@ -123,8 +148,10 @@ internal class ImageViewerDialog<T>(
             setBackgroundColor(builderData.backgroundColor)
 
 
-            setImages(builderData.images, builderData.startPosition, builderData.imageLoader,
-                    builderData.viewHolderLoader)
+            setImages(
+                builderData.images, builderData.startPosition, builderData.imageLoader,
+                builderData.viewHolderLoader
+            )
 
             onPageChange = { position -> builderData.imageChangeListener?.onImageChange(position) }
             onDismiss = { dialog.dismiss() }
