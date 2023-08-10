@@ -13,14 +13,13 @@ import com.stfalcon.sample.common.ui.base.BaseActivity
 import com.stfalcon.sample.common.ui.views.PosterOverlayView
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.CONTAINER_PADDING
-import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.HIDE_STATUS_BAR
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.IMAGES_MARGIN
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.RANDOM_BACKGROUND
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.SHOW_OVERLAY
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.SHOW_TRANSITION
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.SWIPE_TO_DISMISS
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.ZOOMING
-import kotlinx.android.synthetic.main.activity_demo_styling.*
+import kotlinx.android.synthetic.main.activity_demo_styling.stylingPostersGridView
 
 class StylingDemoActivity : BaseActivity() {
 
@@ -61,8 +60,6 @@ class StylingDemoActivity : BaseActivity() {
                 overlayView?.update(posters[position])
             }
             .withDismissListener { showShortToast(R.string.message_on_dismiss) }
-
-        builder.withHiddenStatusBar(options.isPropertyEnabled(HIDE_STATUS_BAR))
 
         if (options.isPropertyEnabled(IMAGES_MARGIN)) {
             builder.withImagesMargin(R.dimen.image_margin)
