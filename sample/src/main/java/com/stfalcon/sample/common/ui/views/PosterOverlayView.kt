@@ -5,6 +5,10 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.Insets
+import androidx.core.graphics.toColorInt
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.stfalcon.sample.R
 import com.stfalcon.sample.common.extensions.sendShareIntent
 import com.stfalcon.sample.common.models.Poster
@@ -28,4 +32,16 @@ class PosterOverlayView @JvmOverloads constructor(
         posterOverlayShareButton.setOnClickListener { context.sendShareIntent(poster.url) }
         posterOverlayDeleteButton.setOnClickListener { onDeleteClick(poster) }
     }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        val insets = getSystemBarWindowInsetsCompat()
+        updatePadding(top = insets.top, bottom = insets.bottom)
+    }
+}
+
+
+fun View.getSystemBarWindowInsetsCompat(): Insets {
+    return WindowInsetsCompat.toWindowInsetsCompat(rootWindowInsets)
+        .getInsets(WindowInsetsCompat.Type.systemBars())
 }
