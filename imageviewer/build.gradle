@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 33
@@ -11,36 +11,55 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
-publish {
-    userOrg = 'troy379'
-    groupId = 'com.github.stfalcon'
-    artifactId = 'stfalcon-imageviewer'
-    publishVersion = '1.0.1'
-    desc = 'A customizable full-screen image viewer with shared image transition support, "pinch to zoom" and "swipe to dismiss" gestures.'
-    uploadName='StfalconImageViewer'
-    website = 'https://github.com/stfalcon-studio/StfalconImageViewer'
+afterEvaluate {
+    publishing {
+        repositories {
+            mavenLocal()
+        }
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId "$environment.group_id"
+                version android.defaultConfig.versionName
+                artifactId project.name
+            }
+        }
+    }
 }
 
 dependencies {
-    api 'androidx.appcompat:appcompat:1.1.0'
-    api 'androidx.transition:transition:1.2.0'
-    implementation 'com.github.chrisbanes:PhotoView:2.2.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    implementation "androidx.transition:transition:$versions.transition"
+    implementation "com.github.chrisbanes:PhotoView:$versions.photoView"
+    implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
+    implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 }
 
 repositories {
     maven { url "https://jitpack.io" }
 }
 
-// Avoid Kotlin docs error
-tasks.withType(Javadoc) {
-    enabled = false
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked"
+    options.deprecation = true
 }
 
-// Remove javadoc related tasks
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
 }
