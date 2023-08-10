@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ImageViewerDialog" parent="android:Theme.Translucent.NoTitleBar">
-        <item name="android:windowTranslucentStatus">true</item>
+    <style name="ImageViewerDialog" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">#66000000</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
 </resources>

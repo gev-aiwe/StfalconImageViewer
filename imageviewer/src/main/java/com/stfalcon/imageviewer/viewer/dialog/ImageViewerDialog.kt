@@ -21,14 +21,14 @@ import android.os.Build
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowInsets
-import android.view.WindowManager
+import android.view.WindowInsetsController
 import android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.toColorInt
 import com.stfalcon.imageviewer.R
 import com.stfalcon.imageviewer.viewer.builder.BuilderData
 import com.stfalcon.imageviewer.viewer.view.ImageViewerView
+
 
 internal class ImageViewerDialog<T>(
     context: Context,
@@ -54,6 +54,20 @@ internal class ImageViewerDialog<T>(
         viewerView.onOverlayVisibilityChanged = { visible ->
             if (visible) showSystemBar() else hideSystemBar()
         }
+
+        dialog.window?.let { window ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val insetsController = window.decorView.windowInsetsController ?: return@let
+                val systemBarsAppearance = insetsController.systemBarsAppearance
+                insetsController.setSystemBarsAppearance(
+                    systemBarsAppearance,
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS.inv()
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+            }
+        }
     }
 
     private fun showSystemBar() {
@@ -63,7 +77,7 @@ internal class ImageViewerDialog<T>(
                 windowInsetsController?.show(WindowInsets.Type.statusBars())
             } else {
                 @Suppress("DEPRECATION")
-                dialog.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             }
         }
     }
@@ -82,11 +96,11 @@ internal class ImageViewerDialog<T>(
                 windowInsetsController?.hide(WindowInsets.Type.statusBars())
             } else {
                 @Suppress("DEPRECATION")
-                dialog.window?.decorView?.systemUiVisibility = (
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                        )
+                window.decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                )
             }
             window.attributes = windowManagerLayoutParams
         }
