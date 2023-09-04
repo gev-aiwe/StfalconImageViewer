@@ -53,15 +53,15 @@ class RotationDemoActivity : AppCompatActivity() {
     }
 
     private fun openViewer(startPosition: Int) {
-        viewer = StfalconImageViewer.Builder<Poster>(this, Demo.posters, ::loadPosterImage)
-            .withTransitionFrom(getTransitionTarget(startPosition))
-            .withStartPosition(startPosition)
-            .withImageChangeListener {
-                currentPosition = it
-                viewer.updateTransitionImage(getTransitionTarget(it))
-            }
-            .withDismissListener { isDialogShown = false }
-            .show(!isDialogShown)
+//        viewer = StfalconImageViewer.Builder<Poster>(this, Demo.posters, ::loadPosterImage)
+//            .withTransitionFrom(getTransitionTarget(startPosition))
+//            .withStartPosition(startPosition)
+//            .withImageChangeListener {
+//                currentPosition = it
+//                viewer.updateTransitionImage(getTransitionTarget(it))
+//            }
+//            .withDismissListener { isDialogShown = false }
+//            .show(!isDialogShown)
 
         currentPosition = startPosition
         isDialogShown = true

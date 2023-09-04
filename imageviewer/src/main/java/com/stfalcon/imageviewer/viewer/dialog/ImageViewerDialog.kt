@@ -16,8 +16,12 @@
 
 package com.stfalcon.imageviewer.viewer.dialog
 
-import android.content.Context
+import android.app.Dialog
 import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowInsets
@@ -25,30 +29,56 @@ import android.view.WindowInsetsController
 import android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import com.stfalcon.imageviewer.R
+import com.stfalcon.imageviewer.listeners.OnDismissListener
+import com.stfalcon.imageviewer.listeners.OnImageChangeListener
+import com.stfalcon.imageviewer.loader.ImageLoader
+import com.stfalcon.imageviewer.loader.OverlayLoader
 import com.stfalcon.imageviewer.viewer.builder.BuilderData
 import com.stfalcon.imageviewer.viewer.view.ImageViewerView
+import kotlin.math.max
 
+class ImageViewerDialog<T> : DialogFragment() {
 
-internal class ImageViewerDialog<T>(
-    context: Context,
-    private val builderData: BuilderData<T>
-) {
+//    private val dialog: AlertDialog
+//    private val viewerView: ImageViewerView<T> = ImageViewerView(context)
 
-    private val dialog: AlertDialog
-    private val viewerView: ImageViewerView<T> = ImageViewerView(context)
+    //private lateinit var dialog: AlertDialog
+    private lateinit var viewerView: ImageViewerView<T>
+    private lateinit var builderData: BuilderData<T>
+
     private var animateOpen = true
 
-    init {
+    companion object {
+        private const val TAG = "SUKA"
+
+        private const val builderDataKey = "BuilderDataKey"
+
+        fun <T> newInstance(builderData: BuilderData<T>): ImageViewerDialog<T> {
+            val args = Bundle()
+            args.putSerializable(builderDataKey, builderData)
+            val f = ImageViewerDialog<T>()
+            f.arguments = args
+            return f
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        builderData = arguments?.getSerializable(builderDataKey) as BuilderData<T>
+
+        Log.d(TAG, "onCreateDialog: setupViews")
         setupViewerView()
-        dialog = AlertDialog
-            .Builder(context, R.style.ImageViewerDialog)
+
+        val dialog = AlertDialog
+            .Builder(requireContext(), R.style.ImageViewerDialog)
             .setView(viewerView)
             .setOnKeyListener { _, keyCode, event -> onDialogKeyEvent(keyCode, event) }
             .create()
             .apply {
                 setOnShowListener { viewerView.open(builderData.transitionView, animateOpen) }
-                setOnDismissListener { builderData.onDismissListener?.onDismiss() }
+                setOnDismissListener { (activity as? OnDismissListener)?.onDismiss() }
             }
 
         viewerView.onOverlayVisibilityChanged = { visible ->
@@ -68,10 +98,12 @@ internal class ImageViewerDialog<T>(
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
             }
         }
+
+        return dialog
     }
 
     private fun showSystemBar() {
-        dialog.window?.let { window ->
+        dialog?.window?.let { window ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 val windowInsetsController = window.decorView.windowInsetsController
                 windowInsetsController?.show(WindowInsets.Type.statusBars())
@@ -83,7 +115,7 @@ internal class ImageViewerDialog<T>(
     }
 
     private fun hideSystemBar() {
-        dialog.window?.let { window ->
+        dialog?.window?.let { window ->
             val windowManagerLayoutParams = window.attributes
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -97,27 +129,28 @@ internal class ImageViewerDialog<T>(
             } else {
                 @Suppress("DEPRECATION")
                 window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN
-                )
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        )
             }
             window.attributes = windowManagerLayoutParams
         }
     }
 
-    fun show(animate: Boolean) {
+    fun show(fragmentManager: FragmentManager, animate: Boolean) {
         animateOpen = animate
-        dialog.show()
+        show(fragmentManager, "")
     }
 
     fun close() {
         viewerView.close()
     }
 
-    fun dismiss() {
-        dialog.dismiss()
-    }
+//    override fun dismiss() {
+//        super.dismiss()
+//        dialog?.dismiss()
+//    }
 
     fun updateImages(images: List<T>) {
         viewerView.updateImages(images)
@@ -132,7 +165,10 @@ internal class ImageViewerDialog<T>(
     }
 
     fun updateTransitionImage(imageView: ImageView?) {
-        viewerView.updateTransitionImage(imageView)
+        Handler(Looper.getMainLooper()).post {
+            Log.d(TAG, "updateTransitionImage: isInit viewer: ${::viewerView.isInitialized}")
+            viewerView.updateTransitionImage(imageView)
+        }
     }
 
     private fun onDialogKeyEvent(keyCode: Int, event: KeyEvent): Boolean {
@@ -151,24 +187,34 @@ internal class ImageViewerDialog<T>(
     }
 
     private fun setupViewerView() {
+        viewerView = ImageViewerView(requireContext())
+        Log.d(TAG, "setupViewerView: viewerView: $viewerView")
         viewerView.apply {
             isZoomingAllowed = builderData.isZoomingAllowed
             isSwipeToDismissAllowed = builderData.isSwipeToDismissAllowed
 
             containerPadding = builderData.containerPaddingPixels
             imagesMargin = builderData.imageMarginPixels
-            overlayView = builderData.overlayView
+
+            overlayView = (activity as? OverlayLoader<T>)?.loadOverlayFor(
+                max(viewerView.currentPosition, builderData.startPosition),
+            )
 
             setBackgroundColor(builderData.backgroundColor)
 
+            val imageLoader = activity as? ImageLoader<T>
 
-            setImages(
-                builderData.images, builderData.startPosition, builderData.imageLoader,
-                builderData.viewHolderLoader
-            )
+            if (imageLoader != null) {
+                setImages(builderData.images, builderData.startPosition, imageLoader, null)
+            }
 
-            onPageChange = { position -> builderData.imageChangeListener?.onImageChange(position) }
-            onDismiss = { dialog.dismiss() }
+            onPageChange = { position ->
+                (activity as? OnImageChangeListener)?.onImageChange(position)
+            }
+            onDismiss = {
+                dismiss()
+                (activity as? OnDismissListener)?.onDismiss()
+            }
         }
     }
 }

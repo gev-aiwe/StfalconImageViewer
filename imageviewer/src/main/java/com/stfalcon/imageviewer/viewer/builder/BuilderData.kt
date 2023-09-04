@@ -24,16 +24,17 @@ import com.stfalcon.imageviewer.listeners.OnImageChangeListener
 import com.stfalcon.imageviewer.loader.ImageLoader
 import com.stfalcon.imageviewer.viewer.viewholder.DefaultViewHolderLoader
 import com.stfalcon.imageviewer.viewer.viewholder.ViewHolderLoader
+import java.io.Serializable
 
-internal class BuilderData<T>(
+class BuilderData<T>(
     val images: List<T>,
-    val imageLoader: ImageLoader<T>
-) {
+    //val imageLoader: ImageLoader<T>
+) : Serializable {
     var backgroundColor = Color.BLACK
     var startPosition: Int = 0
-    var imageChangeListener: OnImageChangeListener? = null
-    var onDismissListener: OnDismissListener? = null
-    var overlayView: View? = null
+//    var imageChangeListener: OnImageChangeListener? = null
+//    var onDismissListener: OnDismissListener? = null
+//    var overlayView: View? = null
     var imageMarginPixels: Int = 0
     var containerPaddingPixels = IntArray(4)
     var isZoomingAllowed = true
@@ -41,8 +42,7 @@ internal class BuilderData<T>(
     var transitionView: ImageView? = null
     var viewHolderLoader: ViewHolderLoader<T>? = DefaultViewHolderLoader()
 
-    constructor(images: List<T>, imageLoader: ImageLoader<T>, viewHolderLoader: ViewHolderLoader<T>)
-            : this(images, imageLoader) {
-        this.viewHolderLoader = viewHolderLoader
-    }
+//    constructor(images: List<T>, imageLoader: ImageLoader<T>, viewHolderLoader: ViewHolderLoader<T>) : this(images, imageLoader) {
+//        this.viewHolderLoader = viewHolderLoader
+//    }
 }

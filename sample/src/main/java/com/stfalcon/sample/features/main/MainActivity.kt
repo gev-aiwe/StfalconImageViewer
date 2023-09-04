@@ -36,15 +36,15 @@ class MainActivity : AppCompatActivity(),
             ID_IMAGES_GRID -> {
                 startActivity(Intent(this, PostersGridDemoActivity::class.java))
             }
-            ID_SCROLL -> {
-                startActivity(Intent(this, ScrollingImagesDemoActivity::class.java))
-            }
-            ID_STYLING -> {
-                startActivity(Intent(this, StylingDemoActivity::class.java))
-            }
-            ID_ROTATION -> {
-                startActivity(Intent(this, RotationDemoActivity::class.java))
-            }
+//            ID_SCROLL -> {
+//                startActivity(Intent(this, ScrollingImagesDemoActivity::class.java))
+//            }
+//            ID_STYLING -> {
+//                startActivity(Intent(this, StylingDemoActivity::class.java))
+//            }
+//            ID_ROTATION -> {
+//                startActivity(Intent(this, RotationDemoActivity::class.java))
+//            }
         }
     }
 }

@@ -26,8 +26,7 @@
 
         <activity
             android:name="com.stfalcon.sample.features.demo.grid.PostersGridDemoActivity"
-            android:label="@string/action_images_grid"
-            android:screenOrientation="portrait"/>
+            android:label="@string/action_images_grid"/>
 
         <activity
             android:name="com.stfalcon.sample.features.demo.scroll.ScrollingImagesDemoActivity"

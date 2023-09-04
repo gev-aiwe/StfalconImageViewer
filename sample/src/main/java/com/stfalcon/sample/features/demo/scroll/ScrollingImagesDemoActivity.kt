@@ -54,11 +54,11 @@ class ScrollingImagesDemoActivity : AppCompatActivity() {
         target: ImageView,
         images: List<String>,
         imageViews: List<ImageView>) {
-        viewer = StfalconImageViewer.Builder<String>(this, images, ::loadImage)
-            .withStartPosition(startPosition)
-            .withTransitionFrom(target)
-            .withImageChangeListener { viewer.updateTransitionImage(imageViews.getOrNull(it)) }
-            .show()
+//        viewer = StfalconImageViewer.Builder<String>(this, images, ::loadImage)
+//            .withStartPosition(startPosition)
+//            .withTransitionFrom(target)
+//            .withImageChangeListener { viewer.updateTransitionImage(imageViews.getOrNull(it)) }
+//            .show()
     }
 
     private fun loadImage(imageView: ImageView, url: String?) {

@@ -51,7 +51,7 @@ import com.stfalcon.imageviewer.loader.ImageLoader
 import com.stfalcon.imageviewer.viewer.viewholder.ViewHolderLoader
 import com.stfalcon.imageviewer.viewer.adapter.ImagesPagerAdapter
 
-internal class ImageViewerView<T> @JvmOverloads constructor(
+class ImageViewerView<T> @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -89,7 +89,12 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     internal var overlayView: View? = null
         set(value) {
             field = value
-            value?.let { rootContainer.addView(it) }
+            value?.let {
+                if (it.parent != null) {
+                    (it.parent as? ViewGroup)?.removeView(it)
+                }
+                rootContainer.addView(it)
+            }
         }
 
     private var rootContainer: ViewGroup

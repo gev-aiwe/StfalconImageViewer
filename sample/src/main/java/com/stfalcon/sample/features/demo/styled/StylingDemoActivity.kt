@@ -48,44 +48,44 @@ class StylingDemoActivity : BaseActivity() {
     }
 
     private fun openViewer(startPosition: Int, imageView: ImageView) {
-        val posters = Demo.posters.toMutableList()
-
-        val builder = StfalconImageViewer.Builder<Poster>(this, posters, ::loadPosterImage)
-            .withStartPosition(startPosition)
-            .withImageChangeListener { position ->
-                if (options.isPropertyEnabled(SHOW_TRANSITION)) {
-                    viewer?.updateTransitionImage(stylingPostersGridView.imageViews[position])
-                }
-
-                overlayView?.update(posters[position])
-            }
-            .withDismissListener { showShortToast(R.string.message_on_dismiss) }
-
-        if (options.isPropertyEnabled(IMAGES_MARGIN)) {
-            builder.withImagesMargin(R.dimen.image_margin)
-        }
-
-        if (options.isPropertyEnabled(CONTAINER_PADDING)) {
-            builder.withContainerPadding(R.dimen.image_margin)
-        }
-
-        if (options.isPropertyEnabled(SHOW_TRANSITION)) {
-            builder.withTransitionFrom(imageView)
-        }
-
-        builder.allowSwipeToDismiss(options.isPropertyEnabled(SWIPE_TO_DISMISS))
-        builder.allowZooming(options.isPropertyEnabled(ZOOMING))
-
-        if (options.isPropertyEnabled(SHOW_OVERLAY)) {
-            setupOverlayView(posters, startPosition)
-            builder.withOverlayView(overlayView)
-        }
-
-        if (options.isPropertyEnabled(RANDOM_BACKGROUND)) {
-            builder.withBackgroundColor(getRandomColor())
-        }
-
-        viewer = builder.show()
+//        val posters = Demo.posters.toMutableList()
+//
+//        val builder = StfalconImageViewer.Builder<Poster>(this, posters, ::loadPosterImage)
+//            .withStartPosition(startPosition)
+//            .withImageChangeListener { position ->
+//                if (options.isPropertyEnabled(SHOW_TRANSITION)) {
+//                    viewer?.updateTransitionImage(stylingPostersGridView.imageViews[position])
+//                }
+//
+//                overlayView?.update(posters[position])
+//            }
+//            .withDismissListener { showShortToast(R.string.message_on_dismiss) }
+//
+//        if (options.isPropertyEnabled(IMAGES_MARGIN)) {
+//            builder.withImagesMargin(R.dimen.image_margin)
+//        }
+//
+//        if (options.isPropertyEnabled(CONTAINER_PADDING)) {
+//            builder.withContainerPadding(R.dimen.image_margin)
+//        }
+//
+//        if (options.isPropertyEnabled(SHOW_TRANSITION)) {
+//            builder.withTransitionFrom(imageView)
+//        }
+//
+//        builder.allowSwipeToDismiss(options.isPropertyEnabled(SWIPE_TO_DISMISS))
+//        builder.allowZooming(options.isPropertyEnabled(ZOOMING))
+//
+//        if (options.isPropertyEnabled(SHOW_OVERLAY)) {
+//            setupOverlayView(posters, startPosition)
+//            builder.withOverlayView(overlayView)
+//        }
+//
+//        if (options.isPropertyEnabled(RANDOM_BACKGROUND)) {
+//            builder.withBackgroundColor(getRandomColor())
+//        }
+//
+//        viewer = builder.show()
     }
 
     private fun setupOverlayView(posters: MutableList<Poster>, startPosition: Int) {
