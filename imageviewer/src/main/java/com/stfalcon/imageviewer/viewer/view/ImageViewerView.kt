@@ -218,6 +218,10 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
         }
     }
 
+    internal fun dismiss() {
+        onDialogClosed()
+    }
+
     internal fun updateImages(images: List<T>) {
         this.images = images
         imagesAdapter?.updateImages(images)
@@ -263,6 +267,10 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     private fun prepareViewsForTransition() {
         transitionImageContainer.makeVisible()
         imagesPager.makeGone()
+        onDialogClosed()
+    }
+
+    private fun onDialogClosed() {
         (imagesPager.adapter as? ImagesPagerAdapter<T>)?.onDialogClosed()
     }
 
