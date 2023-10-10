@@ -42,7 +42,7 @@ internal class ImageViewerDialog<T>(
     init {
         setupViewerView()
         dialog = AlertDialog
-            .Builder(context, R.style.ImageViewerDialog)
+            .Builder(context, builderData.style)
             .setView(viewerView)
             .setOnKeyListener { _, keyCode, event -> onDialogKeyEvent(keyCode, event) }
             .create()
@@ -155,6 +155,7 @@ internal class ImageViewerDialog<T>(
         viewerView.apply {
             isZoomingAllowed = builderData.isZoomingAllowed
             isSwipeToDismissAllowed = builderData.isSwipeToDismissAllowed
+            overlaySingleTap = builderData.overlaySingleTap
 
             containerPadding = builderData.containerPaddingPixels
             imagesMargin = builderData.imageMarginPixels

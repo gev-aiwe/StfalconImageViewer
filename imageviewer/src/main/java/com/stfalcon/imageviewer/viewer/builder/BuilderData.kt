@@ -19,6 +19,8 @@ package com.stfalcon.imageviewer.viewer.builder
 import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.StyleRes
+import com.stfalcon.imageviewer.R
 import com.stfalcon.imageviewer.listeners.OnDismissListener
 import com.stfalcon.imageviewer.listeners.OnImageChangeListener
 import com.stfalcon.imageviewer.loader.ImageLoader
@@ -40,6 +42,8 @@ internal class BuilderData<T>(
     var isSwipeToDismissAllowed = true
     var transitionView: ImageView? = null
     var viewHolderLoader: ViewHolderLoader<T>? = DefaultViewHolderLoader()
+    var overlaySingleTap: (() -> Unit)? = null
+    @StyleRes var style = R.style.ImageViewerDialog
 
     constructor(images: List<T>, imageLoader: ImageLoader<T>, viewHolderLoader: ViewHolderLoader<T>)
             : this(images, imageLoader) {

@@ -26,6 +26,7 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Px;
+import androidx.annotation.StyleRes;
 import androidx.core.content.ContextCompat;
 
 import com.stfalcon.imageviewer.listeners.OnDismissListener;
@@ -38,6 +39,8 @@ import com.stfalcon.imageviewer.viewer.viewholder.ViewHolderLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import kotlin.jvm.functions.Function0;
 
 //N.B.! This class is written in Java for convenient use of lambdas due to languages compatibility issues.
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -191,6 +194,16 @@ public class StfalconImageViewer<T> {
          */
         public Builder<T> withOverlayView(View view) {
             this.data.setOverlayView(view);
+            return this;
+        }
+
+        public Builder<T> withOverlaySingleTap(Function0 function) {
+            this.data.setOverlaySingleTap(function);
+            return this;
+        }
+
+        public Builder<T> withCustomStyle(@StyleRes int style) {
+            this.data.setStyle(style);
             return this;
         }
 

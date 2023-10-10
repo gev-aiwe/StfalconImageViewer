@@ -62,6 +62,8 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
     internal var isZoomingAllowed = true
     internal var isSwipeToDismissAllowed = true
 
+    internal var overlaySingleTap: (() -> Unit)? = null
+
     internal var currentPosition: Int
         get() = imagesPager.currentItem
         set(value) {
@@ -327,8 +329,12 @@ internal class ImageViewerView<T> @JvmOverloads constructor(
 
     private fun handleSingleTap(event: MotionEvent, isOverlayWasClicked: Boolean) {
         if (overlayView != null && !isOverlayWasClicked) {
-            onOverlayVisibilityChanged?.invoke(!overlayView.isVisible)
-            overlayView?.switchVisibilityWithAnimation()
+            if (overlaySingleTap == null) {
+                onOverlayVisibilityChanged?.invoke(!overlayView.isVisible)
+                overlayView?.switchVisibilityWithAnimation()
+            } else {
+                overlaySingleTap?.invoke()
+            }
             super.dispatchTouchEvent(event)
         }
     }
