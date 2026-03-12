@@ -1,13 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 33
+    namespace "com.stfalcon.imageviewer"
+    compileSdkVersion 36
 
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 33
+        targetSdkVersion 36
         versionCode 5
         versionName "1.0.4"
     }
@@ -22,6 +22,9 @@ android {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    publishing {
+        singleVariant("release")
     }
 }
 
@@ -42,13 +45,13 @@ afterEvaluate {
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation "androidx.transition:transition:$versions.transition"
     implementation "com.github.chrisbanes:PhotoView:$versions.photoView"
     implementation "androidx.appcompat:appcompat:$versions.android_appcompat"
     implementation "androidx.recyclerview:recyclerview:$versions.android_recyclerview"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-    implementation "com.google.android.material:material:1.9.0"
+    implementation "com.google.android.material:material:1.13.0"
 }
 
 repositories {
@@ -62,5 +65,5 @@ tasks.withType(JavaCompile) {
 
 task sourceJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
-    classifier "sources"
+    archiveClassifier.set("sources")
 }

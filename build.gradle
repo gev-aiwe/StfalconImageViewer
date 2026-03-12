@@ -1,16 +1,16 @@
 buildscript {
     ext {
         versions = [
-                kotlin                   : "1.7.21",
+                kotlin                   : "2.2.21",
                 ktx                      : [
-                        core: "1.8.0"
+                        core: "1.17.0"
                 ],
-                android_annotation       : "1.4.0",
-                android_appcompat        : "1.5.1",
-                android_recyclerview     : "1.2.1",
-                android_constraint_layout: '2.1.4',
-                photoView                 : "2.2.0",
-                transition: "1.2.0"
+                android_annotation       : "1.9.1",
+                android_appcompat        : "1.7.1",
+                android_recyclerview     : "1.4.0",
+                android_constraint_layout: '2.2.1',
+                photoView                 : "2.3.0",
+                transition: "1.7.0"
 
         ]
         environment = [
@@ -19,20 +19,18 @@ buildscript {
     }
     repositories {
         google()
-        //noinspection JcenterRepositoryObsolete
-        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.3.1"
+        classpath "com.android.tools.build:gradle:9.1.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
     }
 }
 
 allprojects {
     repositories {
-        //noinspection JcenterRepositoryObsolete
-        jcenter()
         google()
+        mavenCentral()
         mavenLocal()
         maven {
             url "https://jitpack.io"

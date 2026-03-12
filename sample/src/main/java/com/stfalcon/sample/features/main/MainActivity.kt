@@ -14,21 +14,22 @@ import com.stfalcon.sample.features.main.adapter.MainActivityPagerAdapter.Compan
 import com.stfalcon.sample.features.main.adapter.MainActivityPagerAdapter.Companion.ID_SCROLL
 import com.stfalcon.sample.features.main.adapter.MainActivityPagerAdapter.Companion.ID_STYLING
 import com.stfalcon.sample.features.main.card.DemoCardFragment
-import kotlinx.android.synthetic.main.activity_main.*
+import com.stfalcon.sample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(),
     DemoCardFragment.OnCardActionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        mainCardsViewPager.apply {
+        binding.mainCardsViewPager.apply {
             adapter = MainActivityPagerAdapter(this@MainActivity, supportFragmentManager)
             pageMargin = resources.getDimension(R.dimen.card_padding).toInt() / 4
             offscreenPageLimit = 3
         }
-        mainCardsPagerIndicator.setViewPager(mainCardsViewPager)
+        binding.mainCardsPagerIndicator.setViewPager(binding.mainCardsViewPager)
     }
 
     override fun onCardAction(actionId: Int) {

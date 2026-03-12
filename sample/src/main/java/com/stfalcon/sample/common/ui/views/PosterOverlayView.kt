@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.Insets
 import androidx.core.graphics.toColorInt
@@ -12,7 +13,6 @@ import androidx.core.view.updatePadding
 import com.stfalcon.sample.R
 import com.stfalcon.sample.common.extensions.sendShareIntent
 import com.stfalcon.sample.common.models.Poster
-import kotlinx.android.synthetic.main.view_poster_overlay.view.*
 
 class PosterOverlayView @JvmOverloads constructor(
     context: Context,
@@ -28,9 +28,9 @@ class PosterOverlayView @JvmOverloads constructor(
     }
 
     fun update(poster: Poster) {
-        posterOverlayDescriptionText.text = poster.description
-        posterOverlayShareButton.setOnClickListener { context.sendShareIntent(poster.url) }
-        posterOverlayDeleteButton.setOnClickListener { onDeleteClick(poster) }
+        findViewById<TextView>(R.id.posterOverlayDescriptionText).text = poster.description
+        findViewById<View>(R.id.posterOverlayShareButton).setOnClickListener { context.sendShareIntent(poster.url) }
+        findViewById<View>(R.id.posterOverlayDeleteButton).setOnClickListener { onDeleteClick(poster) }
     }
 
     override fun onAttachedToWindow() {

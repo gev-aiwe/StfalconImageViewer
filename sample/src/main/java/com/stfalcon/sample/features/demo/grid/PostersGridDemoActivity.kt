@@ -9,17 +9,19 @@ import com.stfalcon.sample.common.extensions.getDrawableCompat
 import com.stfalcon.sample.common.extensions.loadImage
 import com.stfalcon.sample.common.models.Demo
 import com.stfalcon.sample.common.models.Poster
-import kotlinx.android.synthetic.main.activity_demo_posters_grid.*
+import com.stfalcon.sample.databinding.ActivityDemoPostersGridBinding
 
 class PostersGridDemoActivity : AppCompatActivity() {
 
     private lateinit var viewer: StfalconImageViewer<Poster>
+    private lateinit var binding: ActivityDemoPostersGridBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_demo_posters_grid)
+        binding = ActivityDemoPostersGridBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        postersGridView.apply {
+        binding.postersGridView.apply {
             imageLoader = ::loadPosterImage
             onPosterClick = ::openViewer
         }
@@ -30,7 +32,7 @@ class PostersGridDemoActivity : AppCompatActivity() {
             .withStartPosition(startPosition)
             .withTransitionFrom(target)
             .withImageChangeListener {
-                viewer.updateTransitionImage(postersGridView.imageViews[it])
+                viewer.updateTransitionImage(binding.postersGridView.imageViews[it])
             }
             .show()
     }

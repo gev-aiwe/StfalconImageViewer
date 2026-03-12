@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
 //N.B.! This class is written in Java for convenient use of lambdas due to languages compatibility issues.
@@ -197,7 +198,7 @@ public class StfalconImageViewer<T> {
             return this;
         }
 
-        public Builder<T> withOverlaySingleTap(Function0 function) {
+        public Builder<T> withOverlaySingleTap(Function0<Unit> function) {
             this.data.setOverlaySingleTap(function);
             return this;
         }

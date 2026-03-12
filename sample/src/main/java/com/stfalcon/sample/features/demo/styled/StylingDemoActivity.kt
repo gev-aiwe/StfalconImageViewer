@@ -1,5 +1,6 @@
 package com.stfalcon.sample.features.demo.styled
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -19,9 +20,11 @@ import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.SHOW_TRANSITION
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.SWIPE_TO_DISMISS
 import com.stfalcon.sample.features.demo.styled.options.StylingOptions.Property.ZOOMING
-import kotlinx.android.synthetic.main.activity_demo_styling.stylingPostersGridView
+import com.stfalcon.sample.databinding.ActivityDemoStylingBinding
 
 class StylingDemoActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityDemoStylingBinding
 
     private var options = StylingOptions()
     private var overlayView: PosterOverlayView? = null
@@ -29,9 +32,10 @@ class StylingDemoActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_demo_styling)
+        binding = ActivityDemoStylingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        stylingPostersGridView.apply {
+        binding.stylingPostersGridView.apply {
             imageLoader = ::loadPosterImage
             onPosterClick = ::openViewer
         }
@@ -54,7 +58,7 @@ class StylingDemoActivity : BaseActivity() {
             .withStartPosition(startPosition)
             .withImageChangeListener { position ->
                 if (options.isPropertyEnabled(SHOW_TRANSITION)) {
-                    viewer?.updateTransitionImage(stylingPostersGridView.imageViews[position])
+                    viewer?.updateTransitionImage(binding.stylingPostersGridView.imageViews[position])
                 }
 
                 overlayView?.update(posters[position])
@@ -78,7 +82,11 @@ class StylingDemoActivity : BaseActivity() {
 
         if (options.isPropertyEnabled(SHOW_OVERLAY)) {
             setupOverlayView(posters, startPosition)
+            builder.withCustomStyle(R.style.CustomTheme)
             builder.withOverlayView(overlayView)
+            builder.withOverlaySingleTap {
+                //nothing
+            }
         }
 
         if (options.isPropertyEnabled(RANDOM_BACKGROUND)) {
@@ -106,6 +114,6 @@ class StylingDemoActivity : BaseActivity() {
 
     private fun getRandomColor(): Int {
         val random = java.util.Random()
-        return android.graphics.Color.argb(255, random.nextInt(156), random.nextInt(156), random.nextInt(156))
+        return Color.argb(255, random.nextInt(156), random.nextInt(156), random.nextInt(156))
     }
 }

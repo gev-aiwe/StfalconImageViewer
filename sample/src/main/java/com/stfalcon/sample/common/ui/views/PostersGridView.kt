@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.stfalcon.sample.R
 import com.stfalcon.sample.common.models.Demo
 import com.stfalcon.sample.common.models.Poster
-import kotlinx.android.synthetic.main.view_posters_grid.view.*
 
 class PostersGridView @JvmOverloads constructor(
     context: Context,
@@ -21,15 +20,15 @@ class PostersGridView @JvmOverloads constructor(
 
     val imageViews by lazy {
         mapOf<Int, ImageView>(
-            0 to postersFirstImage,
-            1 to postersSecondImage,
-            2 to postersThirdImage,
-            3 to postersFourthImage,
-            4 to postersFifthImage,
-            5 to postersSixthImage,
-            6 to postersSeventhImage,
-            7 to postersEighthImage,
-            8 to postersNinthImage)
+            0 to findViewById(R.id.postersFirstImage),
+            1 to findViewById(R.id.postersSecondImage),
+            2 to findViewById(R.id.postersThirdImage),
+            3 to findViewById(R.id.postersFourthImage),
+            4 to findViewById(R.id.postersFifthImage),
+            5 to findViewById(R.id.postersSixthImage),
+            6 to findViewById(R.id.postersSeventhImage),
+            7 to findViewById(R.id.postersEighthImage),
+            8 to findViewById(R.id.postersNinthImage))
     }
 
     init {

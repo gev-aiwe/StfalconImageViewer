@@ -8,31 +8,34 @@ import com.stfalcon.sample.R
 import com.stfalcon.sample.common.extensions.getDrawableCompat
 import com.stfalcon.sample.common.extensions.loadImage
 import com.stfalcon.sample.common.models.Demo
-import kotlinx.android.synthetic.main.activity_demo_scrolling_images.*
+import com.stfalcon.sample.databinding.ActivityDemoScrollingImagesBinding
 
 class ScrollingImagesDemoActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityDemoScrollingImagesBinding
+
     private val horizontalImageViews by lazy {
         listOf(
-            scrollingHorizontalFirstImage,
-            scrollingHorizontalSecondImage,
-            scrollingHorizontalThirdImage,
-            scrollingHorizontalFourthImage)
+            binding.scrollingHorizontalFirstImage,
+            binding.scrollingHorizontalSecondImage,
+            binding.scrollingHorizontalThirdImage,
+            binding.scrollingHorizontalFourthImage)
     }
 
     private val verticalImageViews by lazy {
         listOf(
-            scrollingVerticalFirstImage,
-            scrollingVerticalSecondImage,
-            scrollingVerticalThirdImage,
-            scrollingVerticalFourthImage)
+            binding.scrollingVerticalFirstImage,
+            binding.scrollingVerticalSecondImage,
+            binding.scrollingVerticalThirdImage,
+            binding.scrollingVerticalFourthImage)
     }
 
     private lateinit var viewer: StfalconImageViewer<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_demo_scrolling_images)
+        binding = ActivityDemoScrollingImagesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         horizontalImageViews.forEachIndexed { index, imageView ->
             loadImage(imageView, Demo.horizontalImages.getOrNull(index))

@@ -19,6 +19,9 @@ package com.stfalcon.imageviewer.viewer.dialog
 import android.content.Context
 import android.os.Build
 import android.view.KeyEvent
+import android.view.ContextThemeWrapper
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
@@ -31,13 +34,14 @@ import com.stfalcon.imageviewer.viewer.view.ImageViewerView
 
 
 internal class ImageViewerDialog<T>(
-    context: Context,
+    private val context: Context,
     private val builderData: BuilderData<T>
 ) {
 
     private val dialog: AlertDialog
     private val viewerView: ImageViewerView<T> = ImageViewerView(context)
     private var animateOpen = true
+    private var backPressedCallback: OnBackPressedCallback? = null
 
     init {
         setupViewerView()
@@ -47,8 +51,13 @@ internal class ImageViewerDialog<T>(
             .setOnKeyListener { _, keyCode, event -> onDialogKeyEvent(keyCode, event) }
             .create()
             .apply {
+                registerBackPressedCallback()
+                backPressedCallback?.let { onBackPressedDispatcher.addCallback(it) }
                 setOnShowListener { viewerView.open(builderData.transitionView, animateOpen) }
-                setOnDismissListener { builderData.onDismissListener?.onDismiss() }
+                setOnDismissListener {
+                    builderData.onDismissListener?.onDismiss()
+                    unregisterBackPressedCallback()
+                }
             }
 
         viewerView.onOverlayVisibilityChanged = { visible ->
@@ -136,16 +145,42 @@ internal class ImageViewerDialog<T>(
         viewerView.updateTransitionImage(imageView)
     }
 
+    private fun handleBackPressed() {
+        if (viewerView.isScaled) {
+            viewerView.resetScale()
+        } else {
+            viewerView.close()
+        }
+    }
+
+    private fun getActivity(): ComponentActivity? {
+        var ctx: Context? = context
+        while (ctx != null) {
+            if (ctx is ComponentActivity) return ctx
+            ctx = (ctx as? ContextThemeWrapper)?.baseContext
+        }
+        return null
+    }
+
+    private fun registerBackPressedCallback() {
+        backPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackPressed()
+            }
+        }
+    }
+
+    private fun unregisterBackPressedCallback() {
+        backPressedCallback?.remove()
+        backPressedCallback = null
+    }
+
     private fun onDialogKeyEvent(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK &&
             event.action == KeyEvent.ACTION_UP &&
             !event.isCanceled
         ) {
-            if (viewerView.isScaled) {
-                viewerView.resetScale()
-            } else {
-                viewerView.close()
-            }
+            handleBackPressed()
             return true
         }
         return false
